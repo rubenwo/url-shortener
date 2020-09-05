@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+  service.server:
+    build: .
+    restart: on-failure
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./data:/data
+      - ./certs:/certs
+
+  service.redis:
+    image: bitnami/redis:5.0
+    environment:
+      # ALLOW_EMPTY_PASSWORD is recommended only for development.
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+    volumes:
+      - redis_data:/bitnami/redis/data
+
+volumes:
+  redis_data:
+    driver: local

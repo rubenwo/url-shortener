@@ -1,0 +1,14 @@
+body {
+    background-color: white;
+}
+
+h1 {
+    color: black;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.input {
+    text-align: center;
+    margin: 0 auto;
+}

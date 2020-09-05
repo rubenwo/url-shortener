@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css"
+      integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
+<link rel="stylesheet" href="style.css">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Custom URL shortener</title>
+</head>
+<body>
+<h1>Shorten your URL</h1>
+<div class="input">
+    <label for="url">Url to shorten:</label><br>
+    <input type="text" id="url" name="url"><br>
+    <button onclick="submit()">Submit</button>
+    <br>
+
+    <label id="generated_url"></label>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
