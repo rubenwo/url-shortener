@@ -8,7 +8,6 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - ./data:/data
       - ./certs:/certs
 
   service.redis:
