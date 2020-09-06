@@ -1,5 +1,5 @@
 const API_URL = "https://localhost";
-const input = document.querySelector("#url");
+
 
 function submit() {
     console.log("Submitting...");
@@ -14,11 +14,10 @@ function submit() {
         })
         .then(r => r.json())
         .then(value => {
-            document.querySelector("#generated_url").innerHTML = `<a href=${API_URL}/${value.slug} target="_blank">${API_URL}/${value.slug}</a>`
-            console.log(value)
+            document.querySelector("#generated_url").innerHTML = `<a href=${API_URL}/${value.slug} target="_blank">${API_URL}/${value.slug}</a> => ${value.url}`;
 
             navigator.clipboard.writeText(`${API_URL}/${value.slug}`).then(function () {
-                alert("copied the genereted url to clipboard")
+                alert("copied the generated url to clipboard")
             }, function () {
                 alert("copying the generated url to clipboard failed")
             });
@@ -26,5 +25,5 @@ function submit() {
 
         });
 
-    document.querySelector("#generated_url").textContent = ""
+    document.querySelector("#url").textContent = ""
 }

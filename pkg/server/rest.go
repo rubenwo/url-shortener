@@ -44,7 +44,7 @@ func (a *api) run() error {
 	router.Use(middleware.Recoverer)
 
 	router.Post("/shorten", a.Add)
-	router.Handle("/{id:[A-Za-z0-9_!]+}", http.HandlerFunc(a.redirect))
+	router.Handle("/{id:[A-Za-z0-9_!-]+}", http.HandlerFunc(a.redirect))
 	router.Get("/*", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Println(r.URL.Path)
 		fs.ServeHTTP(w, r)
@@ -84,8 +84,7 @@ func (a *api) redirect(w http.ResponseWriter, r *http.Request) {
 			target = u
 		}
 	} else {
-		fs.ServeHTTP(w, r)
-		return
+		target = "https://" + r.Host + "/"
 	}
 
 	if len(r.URL.RawQuery) > 0 {
