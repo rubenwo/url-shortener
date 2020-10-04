@@ -1,4 +1,4 @@
-const API_URL = "https://localhost";
+const API_URL = "/";
 
 
 function submit() {
