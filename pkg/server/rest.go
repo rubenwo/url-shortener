@@ -42,13 +42,14 @@ func (a *api) run() error {
 	router.Use(middleware.RealIP)
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
+	router.Use(RateLimiter(NewIPRateLimiter(1, 1))) // 1 request per second per ip
 
 	router.Post("/shorten", a.Add)
 	router.Handle("/{id:[A-Za-z0-9_!-]+}", http.HandlerFunc(a.redirect))
-	router.Get("/*", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	router.Get("/*", func(w http.ResponseWriter, r *http.Request) {
 		log.Println(r.URL.Path)
 		fs.ServeHTTP(w, r)
-	}))
+	})
 
 	handler := cors.Default().Handler(router)
 
@@ -60,9 +61,9 @@ func (a *api) run() error {
 		Addr:         ":443",
 		Handler:      handler,
 		TLSConfig:    tlsCfg,
-		ReadTimeout:  time.Second * 60,
-		WriteTimeout: time.Second * 60,
-		IdleTimeout:  time.Second * 120,
+		ReadTimeout:  time.Second * 10,
+		WriteTimeout: time.Second * 10,
+		IdleTimeout:  time.Second * 20,
 	}
 
 	// Start the HTTP REST server.
