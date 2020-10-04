@@ -19,6 +19,14 @@ services:
     volumes:
       - redis_data:/bitnami/redis/data
 
+  service.database:
+    image: mongo:latest
+    restart: on-failure
+    volumes:
+      - /mnt/db-data:/data/db
+      - /mnt/db-config:/data/configdb
+    command: mongod
+
 volumes:
   redis_data:
     driver: local
