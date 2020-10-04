@@ -1,16 +1,15 @@
 package server
 
 import (
-	"crypto/rand"
-	"encoding/base64"
+	"math/rand"
 )
 
 func generateSlug(n int) string {
-	raw := make([]byte, n)
-	nonce := make([]byte, base64.StdEncoding.EncodedLen(len(raw)))
-	if _, err := rand.Read(raw); err != nil {
-		panic(err)
+	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!_-")
+
+	s := make([]rune, n)
+	for i := range s {
+		s[i] = letters[rand.Intn(len(letters))]
 	}
-	base64.StdEncoding.Encode(nonce, raw)
-	return string(nonce)
+	return string(s)
 }
