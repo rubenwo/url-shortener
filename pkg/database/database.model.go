@@ -17,6 +17,8 @@ func Factory(databaseName string) (Database, error) {
 	switch databaseName {
 	case "redis":
 		return createRedisDatabase()
+	case "mongo":
+		return createMongoDatabase()
 	default:
 		return nil, &NotImplementedDatabaseError{database: databaseName}
 	}

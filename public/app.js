@@ -2,11 +2,9 @@ const API_URL = "https://localhost";
 
 
 function submit() {
-    console.log("Submitting...");
     let u = document.getElementById("url").value;
     if (u === "")
         return;
-    console.log(u)
     fetch(API_URL + "/shorten",
         {
             method: "POST",
