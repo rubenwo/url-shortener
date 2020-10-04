@@ -1,6 +1,6 @@
 # Contributing to url-shortener
 
-To contribute to the repo just fork the repo, create your feature and submit a pull request.
+To contribute to the repo create an issue (so you can be assigned), fork the repo, create your feature and submit a pull request.
 Below are some ideas for areas that need improving.
 
 Let's make a great url-shortener. Current version is working, but certainly not optimal (especially in the front-end)
