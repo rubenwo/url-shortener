@@ -1,3 +1,6 @@
+# URL database when using boltdb
+url.db
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
