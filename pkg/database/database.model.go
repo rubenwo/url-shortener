@@ -19,6 +19,8 @@ func Factory(databaseName string) (Database, error) {
 		return createRedisDatabase()
 	case "mongo":
 		return createMongoDatabase()
+	case "boltdb":
+		return createBoltDatabase()
 	default:
 		return nil, &NotImplementedDatabaseError{database: databaseName}
 	}
