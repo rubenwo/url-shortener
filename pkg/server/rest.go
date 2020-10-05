@@ -4,16 +4,18 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
-	"github.com/rs/cors"
-	"github.com/rubenwo/url-shortener/pkg/database"
 	"log"
 	"math/rand"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
+
+	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/httprate"
+	"github.com/rs/cors"
+	"github.com/rubenwo/url-shortener/pkg/database"
 )
 
 type RedirectReq struct {
@@ -42,7 +44,7 @@ func (a *api) run() error {
 	router.Use(middleware.RealIP)
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
-	router.Use(RateLimiter(NewIPRateLimiter(1, 1))) // 1 request per second per ip
+	router.Use(httprate.LimitByIP(1, 1*time.Second))
 
 	router.Post("/shorten", a.Add)
 	router.Handle("/{id:[A-Za-z0-9_!-]+}", http.HandlerFunc(a.redirect))
