@@ -2,7 +2,7 @@
 .env
 
 # URL database when using boltdb
-url.db
+url.db*
 
 # Safebrowsing database
 malicious.db.gz

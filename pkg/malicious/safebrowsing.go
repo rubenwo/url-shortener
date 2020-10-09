@@ -21,7 +21,7 @@ func createSafeBrowsingAPI() (API, error) {
 	}
 
 	if os.Getenv("API_KEY") == "" {
-		return nil, fmt.Errorf("No API_KEY provided in env vars")
+		return nil, fmt.Errorf("no API_KEY provided in env vars")
 	}
 
 	config := safebrowsing.Config{

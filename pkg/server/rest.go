@@ -46,7 +46,7 @@ func (a *api) run() error {
 	router.Use(middleware.RealIP)
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
-	router.Use(httprate.LimitByIP(1, 1*time.Second))
+	router.Use(httprate.LimitByIP(4, 1*time.Second))
 
 	router.Post("/shorten", a.Add)
 	router.Handle("/{id:[A-Za-z0-9_!-]+}", http.HandlerFunc(a.redirect))
