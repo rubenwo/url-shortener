@@ -6,9 +6,11 @@ services:
     restart: on-failure
     ports:
       - 80:80
-      - 443:443
+      - 443:6443
     volumes:
-      - ./certs:/certs
+      - ./certs:/root/certs
+    env_file:
+      - ./.env
 
   service.redis:
     image: bitnami/redis:5.0

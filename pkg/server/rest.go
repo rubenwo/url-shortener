@@ -16,6 +16,7 @@ import (
 	"github.com/go-chi/httprate"
 	"github.com/rs/cors"
 	"github.com/rubenwo/url-shortener/pkg/database"
+	"github.com/rubenwo/url-shortener/pkg/malicious"
 )
 
 type RedirectReq struct {
@@ -28,7 +29,8 @@ type RedirectResp struct {
 }
 
 type api struct {
-	db database.Database
+	db  database.Database
+	api malicious.API
 }
 
 const slugLength = 5
@@ -60,7 +62,7 @@ func (a *api) run() error {
 	}
 
 	server := &http.Server{
-		Addr:         ":443",
+		Addr:         ":6443",
 		Handler:      handler,
 		TLSConfig:    tlsCfg,
 		ReadTimeout:  time.Second * 10,
@@ -70,8 +72,9 @@ func (a *api) run() error {
 
 	// Start the HTTP REST server.
 	log.Println("SmartEnergyTable API is running on:", server.Addr)
-	return server.ListenAndServeTLS("/certs/server.pem", "/certs/server.key")
+	return server.ListenAndServeTLS("./certs/server.pem", "./certs/server.key")
 }
+
 func (a *api) redirect(w http.ResponseWriter, r *http.Request) {
 	target := ""
 
@@ -112,11 +115,37 @@ func (a *api) Add(w http.ResponseWriter, r *http.Request) {
 	if !strings.HasPrefix(msg.Url, "http") {
 		msg.Url = "http://" + msg.Url
 	}
-	valid := isValidUrl(msg.Url)
 
+	valid := isValidURL(msg.Url)
 	if !valid {
 		log.Printf("%s is not a valid url", msg.Url)
 		writeJsonError(w, fmt.Errorf("'%s' is not a valid url", msg.Url), http.StatusUnprocessableEntity)
+		return
+	}
+
+	done := make(chan malicious.APIResp)
+	ctx := r.Context()
+	// Call the api check
+	go a.api.Check(ctx, done, msg.Url)
+
+	select {
+	case resp := <-done:
+		if resp.Err != nil {
+			log.Println(resp.Err)
+			writeJsonError(w, resp.Err, http.StatusInternalServerError)
+			return
+		}
+
+		if !resp.Valid {
+			log.Printf("%s is a malicious url", msg.Url)
+			writeJsonError(w, fmt.Errorf("'%s' is a malicious url", msg.Url), http.StatusForbidden)
+			return
+		}
+	// In case of WriteTimeout reached
+	case <-ctx.Done():
+		err := ctx.Err()
+		log.Println(err)
+		writeJsonError(w, err, http.StatusInternalServerError)
 		return
 	}
 
@@ -151,7 +180,7 @@ func (a *api) Add(w http.ResponseWriter, r *http.Request) {
 	//fmt.Printf("sending result took %d microseconds\n", time.Since(start).Microseconds())
 }
 
-func isValidUrl(s string) bool {
+func isValidURL(s string) bool {
 	if s == "" {
 		return false
 	}

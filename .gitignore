@@ -1,5 +1,11 @@
+# Exclude .env configuration file
+.env
+
 # URL database when using boltdb
 url.db
+
+# Safebrowsing database
+malicious.db.gz
 
 # Binaries for programs and plugins
 *.exe
