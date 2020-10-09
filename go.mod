@@ -7,6 +7,8 @@ require (
 	github.com/go-chi/chi v4.1.2+incompatible
 	github.com/go-chi/httprate v0.4.0
 	github.com/go-redis/redis v6.15.9+incompatible
+	github.com/google/safebrowsing v0.0.0-20190624211811-bbf0d20d26b3
+	github.com/joho/godotenv v1.3.0
 	github.com/onsi/ginkgo v1.14.1 // indirect
 	github.com/onsi/gomega v1.10.2 // indirect
 	github.com/rs/cors v1.7.0
