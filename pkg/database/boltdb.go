@@ -8,8 +8,8 @@ import (
 )
 
 var (
-	dbName     string = "url.db"
-	bucketName []byte = []byte("URL")
+	dbName     = "url.db"
+	bucketName = []byte("URL")
 )
 
 type boltDB struct {
@@ -37,7 +37,7 @@ func createBoltDatabase() (Database, error) {
 	return &db, err
 }
 
-// Set: Implementation of the database interface
+// Set Implementation of the database interface
 func (db *boltDB) Set(key string, value interface{}) error {
 	var valueB []byte
 	switch tmp := value.(type) {
@@ -59,7 +59,7 @@ func (db *boltDB) Set(key string, value interface{}) error {
 	return err
 }
 
-// Get: Implementation of the database interface
+// Get Implementation of the database interface
 func (db *boltDB) Get(key string) (interface{}, error) {
 	var v []byte
 
@@ -73,7 +73,7 @@ func (db *boltDB) Get(key string) (interface{}, error) {
 	return string(v), err
 }
 
-// Delete: Implementation of the database interface
+// Delete Implementation of the database interface
 func (db *boltDB) Delete(key string) error {
 	log.Println("(BoltDB): deleting value from key:", key)
 	err := db.Update(func(tx *bolt.Tx) error {
