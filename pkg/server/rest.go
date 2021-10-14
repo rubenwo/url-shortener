@@ -71,7 +71,7 @@ func (a *api) run() error {
 	}
 
 	// Start the HTTP REST server.
-	log.Println("SmartEnergyTable API is running on:", server.Addr)
+	log.Println("URL-Shortener API is running on:", server.Addr)
 	return server.ListenAndServeTLS("./certs/server.pem", "./certs/server.key")
 }
 
@@ -101,7 +101,6 @@ func (a *api) redirect(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *api) Add(w http.ResponseWriter, r *http.Request) {
-	//start := time.Now()
 	var msg RedirectReq
 
 	if err := json.NewDecoder(r.Body).Decode(&msg); err != nil {
@@ -110,8 +109,6 @@ func (a *api) Add(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//fmt.Printf("reading request body & decoding json took %d microseconds\n", time.Since(start).Microseconds())
-	//start = time.Now()
 	if !strings.HasPrefix(msg.Url, "http") {
 		msg.Url = "http://" + msg.Url
 	}
@@ -141,6 +138,7 @@ func (a *api) Add(w http.ResponseWriter, r *http.Request) {
 			writeJsonError(w, fmt.Errorf("'%s' is a malicious url", msg.Url), http.StatusForbidden)
 			return
 		}
+
 	// In case of WriteTimeout reached
 	case <-ctx.Done():
 		err := ctx.Err()
@@ -149,13 +147,7 @@ func (a *api) Add(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//fmt.Printf("validating url took %d microseconds\n", time.Since(start).Microseconds())
-	//start = time.Now()
-
 	slug := generateSlug(slugLength)
-
-	//fmt.Printf("generating slug took %d microseconds\n", time.Since(start).Microseconds())
-	//start = time.Now()
 
 	if err := a.db.Set(slug, msg.Url); err != nil {
 		log.Println(err)
@@ -163,8 +155,6 @@ func (a *api) Add(w http.ResponseWriter, r *http.Request) {
 		return
 
 	}
-	//fmt.Printf("settings database values took %d microseconds\n", time.Since(start).Microseconds())
-	//start = time.Now()
 
 	res := RedirectResp{
 		Slug: slug,
@@ -176,8 +166,6 @@ func (a *api) Add(w http.ResponseWriter, r *http.Request) {
 		writeJsonError(w, err, http.StatusBadGateway)
 		return
 	}
-
-	//fmt.Printf("sending result took %d microseconds\n", time.Since(start).Microseconds())
 }
 
 func isValidURL(s string) bool {
